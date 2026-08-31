@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import clinicaRoutes from "./routes/clinica.routes.js";
+import responsableRoutes from "./routes/responsable.routes.js";
+import almacenRoutes from "./routes/almacen.routes.js";
+import medicamentoRoutes from "./routes/medicamento.routes.js";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
@@ -15,6 +18,9 @@ app.use(express.json());
 // here we are using the authRoutes
 app.use("/api/auth", authRoutes);
 app.use("/api/clinicas", clinicaRoutes);
+app.use("/api/responsables", responsableRoutes);
+app.use("/api/almacenes", almacenRoutes);
+app.use("/api/medicamentos", medicamentoRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
