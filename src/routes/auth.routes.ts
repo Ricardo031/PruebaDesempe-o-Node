@@ -12,6 +12,7 @@ const authRoutes = Router();
  *   post:
  *     summary: Registrar un nuevo usuario (ADMIN o GESTOR)
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -45,6 +46,7 @@ authRoutes.post("/register", validateBody(registerSchema), authController.regist
  *   post:
  *     summary: Autenticar usuario y obtener token JWT
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:

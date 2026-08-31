@@ -8,7 +8,7 @@ type JwtPayload = {
     role: UserRole;
 };
 
-export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+export const requireAuth = (req: Request, _res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith("Bearer ")) {
         return next(new AppError("Token requerido", 401));
@@ -28,4 +28,3 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
         return next(new AppError("Token inválido", 401));
     }
 };
-

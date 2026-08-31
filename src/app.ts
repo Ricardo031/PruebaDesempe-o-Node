@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import clinicaRoutes from "./routes/clinica.routes.js";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
@@ -13,11 +14,16 @@ app.use(express.json());
 
 // here we are using the authRoutes
 app.use("/api/auth", authRoutes);
+app.use("/api/clinicas", clinicaRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get("/health", (req, res) => {
+app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });
+});
+
+app.use((req, res) => {
+    res.status(404).json({ message: `Ruta no encontrada: ${req.method} ${req.originalUrl}` });
 });
 
 app.use(errorHandler);

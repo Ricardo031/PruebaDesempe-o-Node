@@ -3,7 +3,7 @@ import { AppError } from "../errors/AppError.js";
 import type { UserRole } from "../models/user.model.js";
 
 export const requireRole = (...roles: UserRole[]) => {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: Request, _res: Response, next: NextFunction) => {
         const user = req.user;
         if (!user) {
             return next(new AppError("Token requerido", 401));
@@ -14,4 +14,3 @@ export const requireRole = (...roles: UserRole[]) => {
         return next();
     };
 };
-

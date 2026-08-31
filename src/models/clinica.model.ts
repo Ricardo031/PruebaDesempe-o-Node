@@ -15,9 +15,9 @@ interface ClinicaAttributes {
 export interface ClinicaCreationAttributes extends Optional<ClinicaAttributes, "id" | "isDeleted"> { }
 
 export class Clinica extends Model<ClinicaAttributes, ClinicaCreationAttributes> implements ClinicaAttributes {
-    declare id: number;
-    declare name: string;
-    declare nit: string;
+    declare id: number; // The ID of the clinicica
+    declare name: string; // The name of the clinicica
+    declare nit: string;    // The NIT is a code that identifies the clinicica
     declare address: string;
     declare phone: string;
     declare isDeleted: boolean;
