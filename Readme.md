@@ -5,7 +5,7 @@ This is a REST API for **RiwiMediCare Plus**, a company that distributes medicin
 ## Coder Info
 
 - **Name:** Ricardo José Torres Bermúdez
-- **Clan:** Node.js
+- **Clan:** Node.js / Nest.js
 
 ## Technologies used
 
