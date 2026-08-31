@@ -2,7 +2,7 @@
 
 Guía de referencia rápida durante el examen. Sigue el orden — es el mismo que usaste para construir el proyecto de práctica.
 
-***
+---
 
 ## 0. Checklist de arranque (primeros 5 minutos)
 
@@ -13,13 +13,13 @@ Guía de referencia rápida durante el examen. Sigue el orden — es el mismo qu
 - [ ] Identificar las reglas de negocio (no solo "campo obligatorio")
 - [ ] Crear la base de datos en pgAdmin ANTES de escribir código
 
-***
+---
 
 ## 1. Setup del proyecto
 
 ```bash
-mkdir nombre-proyecto
-cd nombre-proyecto
+mkdir Prueba_Node_JS
+cd Prueba_Node_JS
 git init
 npm init -y
 ```
@@ -87,7 +87,7 @@ dist/
 .env
 ```
 
-***
+---
 
 ## 2. `.env` y conexión a la base de datos
 
@@ -116,25 +116,25 @@ node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 import { Sequelize } from "sequelize";
 
 export const sequelize = new Sequelize(
-    process.env.DB_NAME || 'mi_proyecto_db',
-    process.env.DB_USER || 'postgres',
-    process.env.DB_PASSWORD || '',
-    {
-        host: process.env.DB_HOST || 'localhost',
-        port: Number(process.env.DB_PORT) || 5432,
-        dialect: 'postgres',
-        logging: false,
-    }
+  process.env.DB_NAME || "mi_proyecto_db",
+  process.env.DB_USER || "postgres",
+  process.env.DB_PASSWORD || "",
+  {
+    host: process.env.DB_HOST || "localhost",
+    port: Number(process.env.DB_PORT) || 5432,
+    dialect: "postgres",
+    logging: false,
+  },
 );
 
 export const connectDB = async (): Promise<void> => {
-    try {
-        await sequelize.authenticate();
-        console.log('Conexión a PostgreSQL exitosa');
-    } catch (error) {
-        console.error('Error conectando a la base de datos: ', error);
-        process.exit(1);
-    }
+  try {
+    await sequelize.authenticate();
+    console.log("Conexión a PostgreSQL exitosa");
+  } catch (error) {
+    console.error("Error conectando a la base de datos: ", error);
+    process.exit(1);
+  }
 };
 ```
 
@@ -172,17 +172,17 @@ import "./models/index.js";
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
-    await connectDB();
-    await sequelize.sync({ alter: true });
-    app.listen(PORT, () => {
-        console.log(`Servidor corriendo en http://localhost:${PORT}`);
-    });
+  await connectDB();
+  await sequelize.sync({ alter: true });
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
 };
 
 startServer();
 ```
 
-***
+---
 
 ## 3. Modelos (patrón para cada entidad)
 
@@ -191,27 +191,33 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db.js";
 
 interface EntityAttributes {
-    id: number;
-    campo: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+  id: number;
+  campo: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export interface EntityCreationAttributes extends Optional<EntityAttributes, "id"> {}
+export interface EntityCreationAttributes extends Optional<
+  EntityAttributes,
+  "id"
+> {}
 
-export class Entity extends Model<EntityAttributes, EntityCreationAttributes> implements EntityAttributes {
-    declare id: number;
-    declare campo: string;
-    declare readonly createdAt: Date;
-    declare readonly updatedAt: Date;
+export class Entity
+  extends Model<EntityAttributes, EntityCreationAttributes>
+  implements EntityAttributes
+{
+  declare id: number;
+  declare campo: string;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 Entity.init(
-    {
-        id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-        campo: { type: DataTypes.STRING, allowNull: false },
-    },
-    { sequelize, tableName: "entities", timestamps: true }
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    campo: { type: DataTypes.STRING, allowNull: false },
+  },
+  { sequelize, tableName: "entities", timestamps: true },
 );
 ```
 
@@ -236,7 +242,7 @@ export { User, Workspace };
 
 > ⚠️ **SIEMPRE importa modelos desde** **`models/index.js`**, nunca directo del archivo individual — si no, las asociaciones podrían no estar registradas todavía.
 
-***
+---
 
 ## 4. Arquitectura por capas (el patrón que se repite por entidad)
 
@@ -256,20 +262,20 @@ import { Entity } from "../models/index.js";
 import type { EntityCreationAttributes } from "../models/entity.model.js";
 
 export const entityRepository = {
-    findAll: async () => Entity.findAll(),
-    findById: async (id: number) => Entity.findByPk(id),
-    create: async (data: EntityCreationAttributes) => Entity.create(data),
-    update: async (id: number, data: Partial<EntityCreationAttributes>) => {
-        const item = await Entity.findByPk(id);
-        if (!item) return null;
-        return item.update(data);
-    },
-    delete: async (id: number) => {
-        const item = await Entity.findByPk(id);
-        if (!item) return null;
-        await item.destroy();
-        return true;
-    },
+  findAll: async () => Entity.findAll(),
+  findById: async (id: number) => Entity.findByPk(id),
+  create: async (data: EntityCreationAttributes) => Entity.create(data),
+  update: async (id: number, data: Partial<EntityCreationAttributes>) => {
+    const item = await Entity.findByPk(id);
+    if (!item) return null;
+    return item.update(data);
+  },
+  delete: async (id: number) => {
+    const item = await Entity.findByPk(id);
+    if (!item) return null;
+    await item.destroy();
+    return true;
+  },
 };
 ```
 
@@ -280,26 +286,26 @@ import { entityRepository } from "../repositories/entity.repository.js";
 import { AppError } from "../errors/AppError.js";
 
 export const entityService = {
-    create: async (data) => {
-        // reglas de negocio ANTES de crear
-        return entityRepository.create(data);
-    },
-    getAll: async () => entityRepository.findAll(),
-    getById: async (id: number) => {
-        const item = await entityRepository.findById(id);
-        if (!item) throw new AppError("No encontrado", 404);
-        return item;
-    },
-    update: async (id: number, data) => {
-        const existing = await entityRepository.findById(id);
-        if (!existing) throw new AppError("No encontrado", 404);
-        return entityRepository.update(id, data);
-    },
-    delete: async (id: number) => {
-        const existing = await entityRepository.findById(id);
-        if (!existing) throw new AppError("No encontrado", 404);
-        return entityRepository.delete(id);
-    },
+  create: async (data) => {
+    // reglas de negocio ANTES de crear
+    return entityRepository.create(data);
+  },
+  getAll: async () => entityRepository.findAll(),
+  getById: async (id: number) => {
+    const item = await entityRepository.findById(id);
+    if (!item) throw new AppError("No encontrado", 404);
+    return item;
+  },
+  update: async (id: number, data) => {
+    const existing = await entityRepository.findById(id);
+    if (!existing) throw new AppError("No encontrado", 404);
+    return entityRepository.update(id, data);
+  },
+  delete: async (id: number) => {
+    const existing = await entityRepository.findById(id);
+    if (!existing) throw new AppError("No encontrado", 404);
+    return entityRepository.delete(id);
+  },
 };
 ```
 
@@ -310,39 +316,51 @@ import type { Request, Response, NextFunction } from "express";
 import { entityService } from "../services/entity.service.js";
 
 export const entityController = {
-    create: async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const item = await entityService.create(req.body);
-            res.status(201).json(item);
-        } catch (error) { next(error); }
-    },
-    getAll: async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            res.status(200).json(await entityService.getAll());
-        } catch (error) { next(error); }
-    },
-    getById: async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            res.status(200).json(await entityService.getById(Number(req.params.id)));
-        } catch (error) { next(error); }
-    },
-    update: async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            res.status(200).json(await entityService.update(Number(req.params.id), req.body));
-        } catch (error) { next(error); }
-    },
-    delete: async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            await entityService.delete(Number(req.params.id));
-            res.status(200).json({ message: "Eliminado exitosamente" });
-        } catch (error) { next(error); }
-    },
+  create: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const item = await entityService.create(req.body);
+      res.status(201).json(item);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.status(200).json(await entityService.getAll());
+    } catch (error) {
+      next(error);
+    }
+  },
+  getById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.status(200).json(await entityService.getById(Number(req.params.id)));
+    } catch (error) {
+      next(error);
+    }
+  },
+  update: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res
+        .status(200)
+        .json(await entityService.update(Number(req.params.id), req.body));
+    } catch (error) {
+      next(error);
+    }
+  },
+  delete: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await entityService.delete(Number(req.params.id));
+      res.status(200).json({ message: "Eliminado exitosamente" });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 ```
 
 > 🔴 **ERROR CLÁSICO**: `router.get("/id", ...)` (ruta literal) vs `router.get("/:id", ...)` (parámetro dinámico) — falta el `:` y la ruta nunca hace match con `/1`, `/2`, etc.
 
-***
+---
 
 ## 5. Manejo de errores centralizado
 
@@ -350,13 +368,13 @@ export const entityController = {
 
 ```typescript
 export class AppError extends Error {
-    public statusCode: number;
-    constructor(message: string, statusCode: number = 400) {
-        super(message);
-        this.statusCode = statusCode;
-        this.name = "AppError";
-        Object.setPrototypeOf(this, AppError.prototype);
-    }
+  public statusCode: number;
+  constructor(message: string, statusCode: number = 400) {
+    super(message);
+    this.statusCode = statusCode;
+    this.name = "AppError";
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
 }
 ```
 
@@ -366,12 +384,17 @@ export class AppError extends Error {
 import type { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/AppError.js";
 
-export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
-    if (error instanceof AppError) {
-        return res.status(error.statusCode).json({ message: error.message });
-    }
-    console.error(error);
-    return res.status(500).json({ message: "Error interno del servidor" });
+export const errorHandler = (
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json({ message: error.message });
+  }
+  console.error(error);
+  return res.status(500).json({ message: "Error interno del servidor" });
 };
 ```
 
@@ -385,7 +408,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
 | `404`  | Recurso no encontrado                                                                 |
 | `409`  | Conflicto (email duplicado, reserva duplicada)                                        |
 
-***
+---
 
 ## 6. Autenticación JWT
 
@@ -398,21 +421,29 @@ import { userRepository } from "../repositories/user.repository.js";
 import { AppError } from "../errors/AppError.js";
 
 export const authService = {
-    login: async ({ email, password }: { email: string; password: string }) => {
-        const user = await userRepository.findByEmail(email);
-        if (!user) throw new AppError("Credenciales inválidas", 401);
+  login: async ({ email, password }: { email: string; password: string }) => {
+    const user = await userRepository.findByEmail(email);
+    if (!user) throw new AppError("Credenciales inválidas", 401);
 
-        const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) throw new AppError("Credenciales inválidas", 401);
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) throw new AppError("Credenciales inválidas", 401);
 
-        const token = jwt.sign(
-            { id: user.id, role: user.role },
-            process.env.JWT_SECRET!,
-            { expiresIn: process.env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"] }
-        );
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: process.env.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"] },
+    );
 
-        return { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
-    },
+    return {
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
+  },
 };
 ```
 
@@ -426,21 +457,28 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError.js";
 
 export interface AuthRequest extends Request {
-    user?: { id: number; role: string };
+  user?: { id: number; role: string };
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new AppError("Token no proporcionado", 401);
-    }
-    const token = authHeader.split(" ")[1];
-    try {
-        req.user = jwt.verify(token, process.env.JWT_SECRET!) as { id: number; role: string };
-        next();
-    } catch {
-        throw new AppError("Token inválido", 401);
-    }
+export const authenticate = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new AppError("Token no proporcionado", 401);
+  }
+  const token = authHeader.split(" ")[1];
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET!) as {
+      id: number;
+      role: string;
+    };
+    next();
+  } catch {
+    throw new AppError("Token inválido", 401);
+  }
 };
 ```
 
@@ -454,12 +492,12 @@ import type { AuthRequest } from "./auth.middleware.js";
 import { AppError } from "../errors/AppError.js";
 
 export const authorize = (...allowedRoles: string[]) => {
-    return (req: AuthRequest, res: Response, next: NextFunction) => {
-        if (!req.user || !allowedRoles.includes(req.user.role)) {
-            throw new AppError("No tienes permisos para realizar esta acción", 403);
-        }
-        next();
-    };
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      throw new AppError("No tienes permisos para realizar esta acción", 403);
+    }
+    next();
+  };
 };
 ```
 
@@ -471,7 +509,7 @@ Uso en rutas: `router.get("/", authenticate, authorize("ADMIN"), controller.getA
 > const data = { ...req.body, userId: req.user!.id }; // sobreescribe cualquier userId falso del body
 > ```
 
-***
+---
 
 ## 7. Validación con Zod
 
@@ -483,15 +521,17 @@ import type { ZodType } from "zod";
 import { AppError } from "../errors/AppError.js";
 
 export const validate = (schema: ZodType) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const result = schema.safeParse(req.body);
-        if (!result.success) {
-            const message = result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join(", ");
-            throw new AppError(`Datos inválidos: ${message}`, 400);
-        }
-        req.body = result.data;
-        next();
-    };
+  return (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.body);
+    if (!result.success) {
+      const message = result.error.issues
+        .map((i) => `${i.path.join(".")}: ${i.message}`)
+        .join(", ");
+      throw new AppError(`Datos inválidos: ${message}`, 400);
+    }
+    req.body = result.data;
+    next();
+  };
 };
 ```
 
@@ -501,9 +541,9 @@ export const validate = (schema: ZodType) => {
 import { z } from "zod";
 
 export const createEntitySchema = z.object({
-    name: z.string().min(1, "El nombre es obligatorio"),
-    email: z.email("Email inválido"),        // v4: z.email(), NO z.string().email()
-    role: z.enum(["ADMIN", "USER"], { error: "Rol inválido" }).optional(),
+  name: z.string().min(1, "El nombre es obligatorio"),
+  email: z.email("Email inválido"), // v4: z.email(), NO z.string().email()
+  role: z.enum(["ADMIN", "USER"], { error: "Rol inválido" }).optional(),
 });
 
 export const updateEntitySchema = createEntitySchema.partial();
@@ -511,7 +551,7 @@ export const updateEntitySchema = createEntitySchema.partial();
 
 Uso en rutas: `router.post("/", validate(createEntitySchema), controller.create)`.
 
-***
+---
 
 ## 8. Swagger
 
@@ -521,17 +561,17 @@ Uso en rutas: `router.post("/", validate(createEntitySchema), controller.create)
 import swaggerJSDoc from "swagger-jsdoc";
 
 const options: swaggerJSDoc.Options = {
-    definition: {
-        openapi: "3.0.0",
-        info: { title: "Mi API", version: "1.0.0", description: "..." },
-        servers: [{ url: "http://localhost:3000" }],
-        components: {
-            securitySchemes: {
-                bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
-            },
-        },
+  definition: {
+    openapi: "3.0.0",
+    info: { title: "Mi API", version: "1.0.0", description: "..." },
+    servers: [{ url: "http://localhost:3000" }],
+    components: {
+      securitySchemes: {
+        bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
+      },
     },
-    apis: ["./src/routes/*.ts"],
+  },
+  apis: ["./src/routes/*.ts"],
 };
 
 export const swaggerSpec = swaggerJSDoc(options);
@@ -583,7 +623,7 @@ Para rutas con `:id`, agrega:
 
 > ⚠️ Mantén el `security`/`403` del JSDoc coherente con los middlewares REALES de la línea de código — un evaluador prueba el endpoint directo, no solo lee el YAML.
 
-***
+---
 
 ## 9. Seeders
 
@@ -594,27 +634,37 @@ import { User, Workspace } from "../models/index.js";
 import bcrypt from "bcrypt";
 
 const seed = async () => {
-    try {
-        await sequelize.sync({ force: true }); // borra y recrea TODO — solo para seeding
+  try {
+    await sequelize.sync({ force: true }); // borra y recrea TODO — solo para seeding
 
-        const adminPassword = await bcrypt.hash("123456", 10);
-        await User.create({ name: "Admin", email: "admin@example.com", password: adminPassword, role: "ADMIN" });
+    const adminPassword = await bcrypt.hash("123456", 10);
+    await User.create({
+      name: "Admin",
+      email: "admin@example.com",
+      password: adminPassword,
+      role: "ADMIN",
+    });
 
-        const userPassword = await bcrypt.hash("123456", 10);
-        await User.create({ name: "User", email: "user@example.com", password: userPassword, role: "USER" });
+    const userPassword = await bcrypt.hash("123456", 10);
+    await User.create({
+      name: "User",
+      email: "user@example.com",
+      password: userPassword,
+      role: "USER",
+    });
 
-        await Workspace.bulkCreate([
-            { name: "Espacio 1", location: "Piso 1", capacity: 10 },
-            { name: "Espacio 2", location: "Piso 2", capacity: 20 },
-            { name: "Espacio 3", location: "Piso 3", capacity: 30 },
-        ]);
+    await Workspace.bulkCreate([
+      { name: "Espacio 1", location: "Piso 1", capacity: 10 },
+      { name: "Espacio 2", location: "Piso 2", capacity: 20 },
+      { name: "Espacio 3", location: "Piso 3", capacity: 30 },
+    ]);
 
-        console.log("Seed completado");
-        process.exit(0);
-    } catch (error) {
-        console.error("Error en el seed:", error);
-        process.exit(1);
-    }
+    console.log("Seed completado");
+    process.exit(0);
+  } catch (error) {
+    console.error("Error en el seed:", error);
+    process.exit(1);
+  }
 };
 
 seed();
@@ -622,7 +672,7 @@ seed();
 
 Ejecutar: `npm run seed`
 
-***
+---
 
 ## 10. Reglas de negocio típicas — patrón de validación cruzada
 
@@ -673,7 +723,7 @@ update: async (id, data) => {
 
 > ⚠️ Al buscar duplicados en un `update`, **siempre excluye el registro que estás editando** (`conflict.id !== id`), o el sistema pensará que siempre choca consigo mismo.
 
-***
+---
 
 ## 11. Orden de rutas en Express — cuidado con rutas específicas vs dinámicas
 
@@ -687,7 +737,7 @@ router.get("/:id", authenticate, controller.getById);
 router.get("/my-resource", authenticate, controller.getMine); // nunca se alcanza
 ```
 
-***
+---
 
 ## 12. Probar en Postman/Bruno
 
@@ -695,7 +745,7 @@ router.get("/my-resource", authenticate, controller.getMine); // nunca se alcanz
 2. Auth → pestaña `Authorization`/`Auth` → `Bearer Token` → pegar el token del login
 3. Guarda el token en una variable de colección para no copiarlo cada vez
 
-***
+---
 
 ## 13. Git / GitFlow / Conventional Commits
 
@@ -716,7 +766,7 @@ git merge feature/authentication
 - `docs: add swagger documentation`
 - `refactor: separate business logic into service layer`
 
-***
+---
 
 ## 14. Docker (opcional / puntos extra)
 
@@ -781,7 +831,7 @@ docker compose down          # mantiene los datos
 docker compose down -v       # borra también los datos
 ```
 
-***
+---
 
 ## 15. Checklist final antes de entregar
 
@@ -797,4 +847,3 @@ docker compose down -v       # borra también los datos
 - [ ] Seeder ejecuta sin errores
 - [ ] README con instrucciones claras
 - [ ] Commits con Conventional Commits, ramas con GitFlow
-
