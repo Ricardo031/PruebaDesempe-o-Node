@@ -6,6 +6,7 @@ import almacenRoutes from "./routes/almacen.routes.js";
 import medicamentoRoutes from "./routes/medicamento.routes.js";
 import inventarioRoutes from "./routes/inventario.routes.js";
 import solicitudRoutes from "./routes/solicitud.routes.js";
+import seedRoutes from "./routes/seed.routes.js";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
@@ -25,6 +26,7 @@ app.use("/api/almacenes", almacenRoutes);
 app.use("/api/medicamentos", medicamentoRoutes);
 app.use("/api/inventarios", inventarioRoutes);
 app.use("/api/solicitudes", solicitudRoutes);
+app.use("/api/seed", seedRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
