@@ -8,7 +8,9 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "seed": "tsx src/seeders/seed.ts",
-    "migrate": "tsx src/migrations/migrate.ts"
+    "migrate": "tsx src/migrations/migrate.ts",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down -v"
   },
   "keywords": [],
   "author": "",
