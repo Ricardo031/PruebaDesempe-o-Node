@@ -1,6 +1,5 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
@@ -8,20 +7,17 @@ export default {
   },
   transform: {
     '^.+\\.tsx?$': [
-      'ts-jest',
+      '@swc/jest',
       {
-        useESM: true,
-        tsconfig: {
-          target: 'ES2022',
-          module: 'ESNext',
-          moduleResolution: 'Bundler',
-          esModuleInterop: true,
-          strict: true,
-          skipLibCheck: true,
-          resolveJsonModule: true,
-          allowImportingTsExtensions: true,
-          isolatedModules: true,
-          types: ['jest', 'node'],
+        jsc: {
+          parser: {
+            syntax: 'typescript',
+            tsx: false,
+          },
+          target: 'es2022',
+        },
+        module: {
+          type: 'es6',
         },
       },
     ],

@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
@@ -84,48 +84,48 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { z } from "zod";</span></span></span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >/**</span>
-<span class="cstat-no" title="statement not covered" > * @description Esquema de creación de una clica</span>
-<span class="cstat-no" title="statement not covered" > * @param {string} name - Nombre de la clica</span>
-<span class="cstat-no" title="statement not covered" > * @param {string} nit - NIT de la clica</span>
-<span class="cstat-no" title="statement not covered" > * @param {string} address - Direccion de la clica</span>
-<span class="cstat-no" title="statement not covered" > * @param {string} phone - Telefono de la clica</span>
-<span class="cstat-no" title="statement not covered" > * */</span>
-<span class="cstat-no" title="statement not covered" >export const clinicaSchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >    name: z.string().min(1, "El nombre es obligatorio"),</span>
-<span class="cstat-no" title="statement not covered" >    nit: z.string().min(1, "El NIT es obligatorio"),</span>
-<span class="cstat-no" title="statement not covered" >    address: z.string().min(1, "La direccion es obligatoria"),</span>
-<span class="cstat-no" title="statement not covered" >    phone: z.string().min(1, "El telefono es obligatorio"),</span>
-<span class="cstat-no" title="statement not covered" >});</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export const updateClinicaSchema = clinicaSchema</span>
-<span class="cstat-no" title="statement not covered" >    .partial()</span>
-<span class="cstat-no" title="statement not covered" >    .refine((data) =&gt; Object.keys(data).length &gt; 0, {</span>
-<span class="cstat-no" title="statement not covered" >        message: "Debes enviar al menos un campo para actualizar",</span>
-<span class="cstat-no" title="statement not covered" >    });</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from "zod";
+&nbsp;
+/**
+ * @description Esquema de creación de una clica
+ * @param {string} name - Nombre de la clica
+ * @param {string} nit - NIT de la clica
+ * @param {string} address - Direccion de la clica
+ * @param {string} phone - Telefono de la clica
+ * */
+export const clinicaSchema = <span class="cstat-no" title="statement not covered" >z.object({</span>
+    name: z.string().min(1, "El nombre es obligatorio"),
+    nit: z.string().min(1, "El NIT es obligatorio"),
+    address: z.string().min(1, "La direccion es obligatoria"),
+    phone: z.string().min(1, "El telefono es obligatorio"),
+});
+&nbsp;
+export const updateClinicaSchema = <span class="cstat-no" title="statement not covered" >clinicaSchema</span>
+    .partial()
+    .refine(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; <span class="cstat-no" title="statement not covered" >Object.keys(data).length &gt; 0, {</span>
+        message: "Debes enviar al menos un campo para actualizar",
+    });
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -133,7 +133,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-31T16:35:47.582Z
+                at 2026-09-01T15:55:11.786Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

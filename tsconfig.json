@@ -7,6 +7,10 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
+    "types": [
+      "jest",
+      "node"
+    ],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
@@ -16,7 +20,6 @@
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "src/__tests__"
+    "dist"
   ]
 }
