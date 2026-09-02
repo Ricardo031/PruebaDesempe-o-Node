@@ -17,10 +17,10 @@ describe("solicitudService.create", () => {
     };
 
     beforeEach(() => {
-        // Restaura las implementaciones originales antes de cada test
+        // Restore the original implementations before each test
         jest.restoreAllMocks();
 
-        // Espía los métodos y define las respuestas por defecto
+        // Mock the repository methods and define default responses
         jest.spyOn(clinicRepository, "findById").mockResolvedValue({ id: 1, isDeleted: false } as any);
         jest.spyOn(almacenRepository, "findById").mockResolvedValue({ id: 2, isDeleted: false } as any);
         jest.spyOn(medicamentoRepository, "findById").mockResolvedValue({ id: 3, isDeleted: false } as any);
@@ -48,7 +48,7 @@ describe("solicitudService.create", () => {
     });
 
     it("should throw AppError 404 when clinica is not found", async () => {
-        // Sobrescribe la respuesta solo para esta prueba
+        // Mock the response only for this test
         jest.spyOn(clinicRepository, "findById").mockResolvedValue(null);
 
         await expect(solicitudService.create(baseData)).rejects.toMatchObject({
