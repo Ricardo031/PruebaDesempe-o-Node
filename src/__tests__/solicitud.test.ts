@@ -1,24 +1,11 @@
-import { AppError } from "../errors/AppError.js";
+import { describe, expect, it, beforeEach, jest } from "@jest/globals";
 import { SolicitudStatus, type SolicitudCreationAttributes } from "../models/solicitud.model.js";
-
-jest.mock("../repositories/clinica.repository.js");
-jest.mock("../repositories/almacen.repository.js");
-jest.mock("../repositories/medicamento.repository.js");
-jest.mock("../repositories/inventario.repository.js");
-jest.mock("../repositories/solicitud.repository.js");
-
 import { almacenRepository } from "../repositories/almacen.repository.js";
 import { clinicRepository } from "../repositories/clinica.repository.js";
 import { inventarioRepository } from "../repositories/inventario.repository.js";
 import { medicamentoRepository } from "../repositories/medicamento.repository.js";
 import { solicitudRepository } from "../repositories/solicitud.repository.js";
 import { solicitudService } from "../services/solicitud.service.js";
-
-const mockedClinicaRepo = jest.mocked(clinicRepository);
-const mockedAlmacenRepo = jest.mocked(almacenRepository);
-const mockedMedicamentoRepo = jest.mocked(medicamentoRepository);
-const mockedInventarioRepo = jest.mocked(inventarioRepository);
-const mockedSolicitudRepo = jest.mocked(solicitudRepository);
 
 describe("solicitudService.create", () => {
     const baseData: SolicitudCreationAttributes = {
@@ -30,22 +17,25 @@ describe("solicitudService.create", () => {
     };
 
     beforeEach(() => {
-        jest.clearAllMocks();
-        mockedClinicaRepo.findById.mockResolvedValue({ id: 1, isDeleted: false } as any);
-        mockedAlmacenRepo.findById.mockResolvedValue({ id: 2, isDeleted: false } as any);
-        mockedMedicamentoRepo.findById.mockResolvedValue({ id: 3, isDeleted: false } as any);
-        mockedInventarioRepo.findByAlmacenAndMedicamento.mockResolvedValue({ id: 10, quantity: 100 } as any);
-        mockedSolicitudRepo.create.mockResolvedValue({ id: 99, ...baseData } as any);
+        // Restore the original implementations before each test
+        jest.restoreAllMocks();
+
+        // Mock the repository methods and define default responses
+        jest.spyOn(clinicRepository, "findById").mockResolvedValue({ id: 1, isDeleted: false } as any);
+        jest.spyOn(almacenRepository, "findById").mockResolvedValue({ id: 2, isDeleted: false } as any);
+        jest.spyOn(medicamentoRepository, "findById").mockResolvedValue({ id: 3, isDeleted: false } as any);
+        jest.spyOn(inventarioRepository, "findByAlmacenAndMedicamento").mockResolvedValue({ id: 10, quantity: 100 } as any);
+        jest.spyOn(solicitudRepository, "create").mockResolvedValue({ id: 99, ...baseData } as any);
     });
 
     it("should create a solicitud when all validations pass", async () => {
         const result = await solicitudService.create(baseData);
 
-        expect(mockedClinicaRepo.findById).toHaveBeenCalledWith(1);
-        expect(mockedAlmacenRepo.findById).toHaveBeenCalledWith(2);
-        expect(mockedMedicamentoRepo.findById).toHaveBeenCalledWith(3);
-        expect(mockedInventarioRepo.findByAlmacenAndMedicamento).toHaveBeenCalledWith(2, 3);
-        expect(mockedSolicitudRepo.create).toHaveBeenCalledWith(baseData);
+        expect(clinicRepository.findById).toHaveBeenCalledWith(1);
+        expect(almacenRepository.findById).toHaveBeenCalledWith(2);
+        expect(medicamentoRepository.findById).toHaveBeenCalledWith(3);
+        expect(inventarioRepository.findByAlmacenAndMedicamento).toHaveBeenCalledWith(2, 3);
+        expect(solicitudRepository.create).toHaveBeenCalledWith(baseData);
         expect(result.id).toBe(99);
     });
 
@@ -54,11 +44,12 @@ describe("solicitudService.create", () => {
             message: "La cantidad solicitada debe ser mayor a cero",
             statusCode: 400,
         });
-        expect(mockedSolicitudRepo.create).not.toHaveBeenCalled();
+        expect(solicitudRepository.create).not.toHaveBeenCalled();
     });
 
     it("should throw AppError 404 when clinica is not found", async () => {
-        mockedClinicaRepo.findById.mockResolvedValue(null);
+        // Mock the response only for this test
+        jest.spyOn(clinicRepository, "findById").mockResolvedValue(null);
 
         await expect(solicitudService.create(baseData)).rejects.toMatchObject({
             message: "Clinica no encontrada",
@@ -67,7 +58,7 @@ describe("solicitudService.create", () => {
     });
 
     it("should throw AppError 400 when inventory is insufficient", async () => {
-        mockedInventarioRepo.findByAlmacenAndMedicamento.mockResolvedValue({ id: 10, quantity: 2 } as any);
+        jest.spyOn(inventarioRepository, "findByAlmacenAndMedicamento").mockResolvedValue({ id: 10, quantity: 2 } as any);
 
         await expect(solicitudService.create(baseData)).rejects.toMatchObject({
             message: "Inventario insuficiente para registrar la solicitud",

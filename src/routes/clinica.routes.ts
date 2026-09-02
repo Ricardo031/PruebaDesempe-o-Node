@@ -14,8 +14,7 @@ const clinicaRoutes = Router();
  *   post:
  *     summary: Registrar una nueva clica
  *     tags: [Clinica]
- *     security:
- *       - bearerAuth: []
+ * 
  *     requestBody:
  *       required: true
  *       content:

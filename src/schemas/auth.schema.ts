@@ -2,9 +2,9 @@ import { z } from "zod";
 import { UserRole } from "../models/user.model.js";
 
 /**
- * @description Valida el cuerpo de la petición POST /register
- * - El usuario envía explícitamente el rol (ADMIN | GESTOR)
- * - Contraseña mínimo 6 caracteres (criterio básico)
+ * @description Validate the register request body schema
+ * - User explicitly sends the role (ADMIN | GESTOR)
+ * - Password minimum 6 characters (basic criterion)
  */
 export const registerSchema = z.object({
     name: z.string().min(1, "El nombre es obligatorio"),
@@ -14,10 +14,10 @@ export const registerSchema = z.object({
 });
 
 /**
- * @description Valida el cuerpo de la petición POST /login
+ * @description Validate the login request body schema
  */
 export const loginSchema = z.object({
-    email: z.email("El email no tiene un formato válido"),
+    email: z.string().email("El email no tiene un formato válido"),
     password: z.string().min(1, "La contraseña es obligatoria"),
 });
 
